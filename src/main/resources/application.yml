@@ -1,0 +1,48 @@
+server:
+  port: 8003
+  display-name: bz_upload
+  clientNo: BZ00001
+spring:  
+  profiles:  
+    active: test
+################################################测试环境配置#######################################################
+---                                                       
+spring:
+  profiles: test
+  aop:
+    proxy-target-class: true
+###########数据源配置#######################
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.2.202:3306/bz_system?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&failOverReadOnly=false
+    username: bztest
+    password: bz123456
+###########缓存配置#######################    
+  cache: 
+   type: ehcache
+   ehcache: 
+    config: classpath:ehcache.xml    
+#############dubbo配置###########################    
+  dubbo: 
+   application:
+     name: fileService-provider
+   base-package: com.bz.upload.core.service.impl,com.bz.open.core.service.upload  # dubbo服务发布者所在的包
+   registry:
+     address: 192.168.2.202:2181,192.168.2.205:2181                   # zookeeper注册中心的地址
+     port: 2181                           # zookeeper注册中心的端口
+   protocol:
+     name: dubbo
+     serialization: hessian2
+   provider:
+     retries: 0                           # 服务调用重试次数，服务发布者不给重试，让服务调用者自己重试
+ ############################文件上传配置###################
+upload:
+  save: 
+   folder: /data/images  ##上传文件存放目录
+  view:
+   server: localhost  ##上传文件服务器地址  
+  watermark:
+   folder: /data/images ##水印文件存放地址
+   data: '{"default":"watermark.png"}'
+     
